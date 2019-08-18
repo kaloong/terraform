@@ -31,8 +31,9 @@ data "vsphere_resource_pool" "pool" {
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 
-resource "vsphere_virtual_machine" "centos7vm01" {
-  name     = "centos7vm01"
+resource "vsphere_virtual_machine" "centos7vm" {
+  count    = 3
+  name     = "centos7vm0${count.index}"
   num_cpus = 1
   memory   = 1024
   network_interface {  
@@ -46,11 +47,11 @@ resource "vsphere_virtual_machine" "centos7vm01" {
       dns_server_list = ["172.16.30.100","172.16.30.101"]
 
       linux_options {
-        host_name = "centos7vm01"
+        host_name = "centos7vm0${count.index}"
         domain    = "mihome.lab"
       }
       network_interface {
-        ipv4_address = "172.16.21.60"
+        ipv4_address = "172.16.21.6${count.index}"
         ipv4_netmask = "24"
       }
       ipv4_gateway = "172.16.21.10"
@@ -59,7 +60,7 @@ resource "vsphere_virtual_machine" "centos7vm01" {
   }
   datastore_cluster_id = "${data.vsphere_datastore_cluster.datastore.id}"
   disk {
-    label = "centos7_vm01.vmdk"
+    label = "centos7_vm0${count.index}.vmdk"
     size  = 20
     thin_provisioned = "false"
   }
